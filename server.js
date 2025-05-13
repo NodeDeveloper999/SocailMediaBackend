@@ -18,9 +18,12 @@ app.use(express.json());
 app.use(cors({
   origin: 'https://social-app-8ox3.vercel.app',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-
+allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
 
 }));
+app.options('*', cors()); // handle preflight for all routes
+
 app.use('/uploads', express.static('uploads'));
 
 app.use('/api/auth', authRoutes);
