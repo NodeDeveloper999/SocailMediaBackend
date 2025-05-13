@@ -12,8 +12,15 @@ dotenv.config();
 connectDB();
 
 const app = express();
-app.use(cors());
+// CORS configuration
+
 app.use(express.json());
+app.use(cors({
+  origin: 'https://social-app-8ox3.vercel.app',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+
+
+}));
 app.use('/uploads', express.static('uploads'));
 
 app.use('/api/auth', authRoutes);
