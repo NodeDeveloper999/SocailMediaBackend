@@ -18,7 +18,7 @@ app.use(express.json());
 app.use(cors({
   origin: [
     'http://localhost:3000',
-    'https://socail-app-8ox3.vercel.app' // your frontend domain
+    'https://social-app-bo3w.vercel.app' // your frontend domain
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
