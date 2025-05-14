@@ -16,13 +16,15 @@ const app = express();
 
 app.use(express.json());
 app.use(cors({
-  origin: 'https://social-app-8ox3.vercel.app',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-
-  credentials: true,
-
+  origin: [
+    'http://localhost:3000',
+    'https://socail-app-8ox3.vercel.app' // your frontend domain
+  ],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
 }));
-app.options('*', cors()); // handle preflight for all routes
+// app.options('*', cors()); // handle preflight for all routes
 
 app.use('/uploads', express.static('uploads'));
 
