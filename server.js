@@ -5,26 +5,24 @@ import connectDB from './config/db.js';
 import authRoutes from './routes/authRoutes.js';
 import postRoutes from './routes/postRoutes.js';
 import userRoutes from './routes/userRoutes.js';
-// import { notFound, errorHandler } from './middlewares/error.js';
 
 dotenv.config();
 
 connectDB();
 
 const app = express();
-// CORS configuration
+
 
 app.use(express.json());
 app.use(cors({
   origin: [
     'http://localhost:3000',
-    'https://social-app-bo3w.vercel.app' // your frontend domain
+    'https://social-app-bo3w.vercel.app' 
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
 }));
-// app.options('*', cors()); // handle preflight for all routes
 
 app.use('/uploads', express.static('uploads'));
 
@@ -32,8 +30,6 @@ app.use('/api/auth', authRoutes);
 app.use('/api/posts', postRoutes);
 app.use('/api/users', userRoutes);
 
-// app.use(notFound);
-// app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 

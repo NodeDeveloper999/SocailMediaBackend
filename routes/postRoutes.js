@@ -18,18 +18,12 @@ import {
 
 const router = express.Router();
 
-// router.route('/')
-//   .post(protect, upload.array('images', 10), createPost)
-//   .get(getPosts);
 
-// router.route('/:id/like').put(protect, likePost);
 
 router.post('/create', createPost);
 
-// Like or unlike a post
 router.post('/like', toggleLikePost);
 
-// Add a comment to a post
 router.post('/comment', addComment);
 
 

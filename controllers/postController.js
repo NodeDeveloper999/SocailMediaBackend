@@ -41,7 +41,6 @@ export const deletePost = async (req, res) => {
     }
 };
 
-// controllers/postController.js
 export const updatePost = async (req, res) => {
   try {
     const { caption, images } = req.body;
@@ -96,28 +95,6 @@ export const likeOrUnlikeComment = async (req, res) => {
     }
 };
 
-// controllers/postController.js
-// export const getPaginatedPosts = async (req, res) => {
-//    const page = parseInt(req.query.page) || 1;
-//     const limit = parseInt(req.query.limit) || 7;
-//     const skip = (page - 1) * limit;
-
-//     try {
-//         const posts = await Post.find()
-//             .sort({ createdAt: -1 }) // Most recent first
-//             .skip(skip)
-//             .limit(limit);
-
-//         res.json(posts);
-//     } catch (err) {
-//         console.error(err);
-//         res.status(500).json({ message: 'Server error fetching posts' });
-//     }
-// };
-
-
-
-
 
 
 export const getPaginatedPosts = async (req, res) => {
@@ -130,25 +107,22 @@ export const getPaginatedPosts = async (req, res) => {
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
-      .populate('user') // Populate the user who created the post
-      .populate('likes', 'username _id') // ✅ Populate the likes with username
+      .populate('user') 
+      .populate('likes', 'username _id') 
       .lean();
 
     const postsWithDetails = await Promise.all(
       posts.map(async (post) => {
-        // Step 1: Get all comments related to this post
         const allComments = await Comment.find({ post: post._id })
-          .populate('user') // Populate the user who made the comment
+          .populate('user') 
           .lean();
 
-        // Step 2: Create a comment map by ID
         const commentMap = {};
         allComments.forEach(comment => {
           comment.replies = [];
           commentMap[comment._id.toString()] = comment;
         });
 
-        // Step 3: Build the tree structure for comments
         const commentTree = [];
         allComments.forEach(comment => {
           if (comment.parentComment) {
@@ -164,7 +138,7 @@ export const getPaginatedPosts = async (req, res) => {
         return {
           ...post,
           user: post.user,
-          likes: post.likes, // ✅ Already populated with user objects
+          likes: post.likes,
           comments: commentTree,
           likesCount: post.likes?.length || 0
         };
@@ -200,7 +174,6 @@ export const addComment = async (req, res) => {
 
     await comment.save();
 
-    // Add comment to post
     await Post.findByIdAndUpdate(postId, {
       $push: { comments: comment._id }
     });
@@ -225,9 +198,9 @@ export const toggleLikePost = async (req, res) => {
     const alreadyLiked = post.likes.includes(userId);
 
     if (alreadyLiked) {
-      post.likes.pull(userId); // Unlike
+      post.likes.pull(userId); 
     } else {
-      post.likes.push(userId); // Like
+      post.likes.push(userId); 
     }
 
     await post.save();
@@ -243,14 +216,12 @@ export const toggleLikePost = async (req, res) => {
 };
 
 
-// ✅ Controller to get paginated likers of a post
 export const getLikersOfPost = async (req, res) => {
   try {
     const { postId } = req.params;
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 100;
 
-    // ✅ Find the post
     const post = await Post.findById(postId);
     if (!post) {
       return res.status(404).json({ message: 'Post not found.' });
@@ -259,12 +230,10 @@ export const getLikersOfPost = async (req, res) => {
     const totalLikers = post.likes.length;
     const totalPages = Math.ceil(totalLikers / limit);
 
-    // ✅ Slice the likes array to get the correct page of user IDs
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
     const paginatedIds = post.likes.slice(startIndex, endIndex);
 
-    // ✅ Fetch user details by IDs
     const usersMap = await User.find({ _id: { $in: paginatedIds } })
       .select('username profilePicture bio')
       .then(users =>
@@ -274,12 +243,11 @@ export const getLikersOfPost = async (req, res) => {
         }, {})
       );
 
-    // ✅ Maintain the order of likers
     const orderedUsers = paginatedIds
       .map(id => usersMap[id.toString()])
-      .filter(Boolean); // Filter out any missing users
+      .filter(Boolean); 
 
-    // ✅ Send response
+   
     res.status(200).json({
       currentPage: page,
       totalUsers: totalLikers,

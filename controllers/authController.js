@@ -2,26 +2,20 @@ import User from '../models/User.js';
 import jwt from 'jsonwebtoken';
 import { uploadToCloudinary } from '../utils/cloudinary.js';
 
-// @desc    Register a new user
-// @route   POST /api/auth/register
 export const register = async (req, res) => {
   try {
     const { username, password, bio } = req.body;
-    
-    // Check if user exists
     const userExists = await User.findOne({ username });
     if (userExists) {
       return res.status(400).json({ message: 'Username already exists' });
     }
     
-    // Upload profile picture if exists
-    let profilePicture = '';
+     let profilePicture = '';
     if (req.file) {
       const result = await uploadToCloudinary(req.file.path, 'profile_pictures');
       profilePicture = result.secure_url;
     }
     
-    // Create user
     const user = await User.create({
       username,
       password,
@@ -29,7 +23,6 @@ export const register = async (req, res) => {
       profilePicture
     });
     
-    // Generate token
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: process.env.JWT_EXPIRES_IN,
     });
@@ -46,8 +39,6 @@ export const register = async (req, res) => {
   }
 };
 
-// @desc    Login user
-// @route   POST /api/auth/login
 export const login = async (req, res) => {
   try {
     const { username, password } = req.body;

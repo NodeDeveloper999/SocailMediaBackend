@@ -7,7 +7,7 @@ import User from './models/User.js';
 import Post from './models/Post.js';
 import Comment from './models/Comment.js';
 
-const MONGO_URI = 'mongodb+srv://raheem:NcHJtHpoqZXEPirf@cluster0.am7bibb.mongodb.net'; // Change if needed
+const MONGO_URI = 'mongodb+srv://raheem:NcHJtHpoqZXEPirf@cluster0.am7bibb.mongodb.net/socialApp?retryWrites=true&w=majority'; // Change if needed
 
 mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log('Connected to MongoDB'))
